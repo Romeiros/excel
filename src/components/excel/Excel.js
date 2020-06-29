@@ -5,7 +5,6 @@ export class Excel {
     console.log('EXCEL)INIT');
     this.$el = $(selector);
     this.components = options.components || [];
-    console.log(options);
   }
 
   getRoot() {
