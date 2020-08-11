@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between;
 
-  .input {
+  & .input {
     margin: 0;
     padding: 2px 7px;
     min-width: 1px;
@@ -24,13 +24,12 @@
     outline: none;
 
     &:hover {
-      border: 1px solid #eee;
+      border: 1px solid $border-color;
     }
 
     &:focus {
       border: 2px solid #1a73e8;
     }
-
   }
 
   .button {

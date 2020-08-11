@@ -1,44 +1,51 @@
-import {$} from '../dom';
-import {ActiveRoute} from './ActiveRoute';
-
+import {$} from '../dom'
+import {ActiveRoute} from './ActiveRoute'
+import {Loader} from '../../components/Loader'
 
 export class Router {
   constructor(selector, routes) {
     if (!selector) {
-      throw new Error('Selector is not provided in Router');
+      throw new Error('Selector is not provided in Router')
     }
 
-    this.$placeholder = $(selector);
-    this.routes = routes;
+    this.$placeholder = $(selector)
+    this.routes = routes
 
-    this.page = null;
+    this.loader = new Loader()
 
-    this.changePageHandler = this.changePageHandler.bind(this);
+    this.page = null
 
-    this.init();
+    this.changePageHandler = this.changePageHandler.bind(this)
+
+    this.init()
   }
 
   init() {
-    window.addEventListener('hashchange', this.changePageHandler);
-    this.changePageHandler();
+    window.addEventListener('hashchange', this.changePageHandler)
+    this.changePageHandler()
   }
 
-  changePageHandler(event) {
+  async changePageHandler() {
     if (this.page) {
-      this.page.destroy();
+      this.page.destroy()
     }
-    const Page = ActiveRoute.path.includes('excel') ? this.routes.excel : this.routes.dashboard;
 
-    this.page = new Page(ActiveRoute.param);
+    this.$placeholder.clear().append(this.loader)
 
-    this.$placeholder.clear();
+    const Page = ActiveRoute.path.includes('excel')
+      ? this.routes.excel
+      : this.routes.dashboard
 
-    this.$placeholder.append(this.page.getRoot());
+    this.page = new Page(ActiveRoute.param)
 
-    this.page.afterRender();
+    const root = await this.page.getRoot()
+
+    this.$placeholder.clear().append(root)
+
+    this.page.afterRender()
   }
 
   destroy() {
-    window.removeEventListener('hashchange', this.changePageHandler);
+    window.removeEventListener('hashchange', this.changePageHandler)
   }
 }
